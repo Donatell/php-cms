@@ -4,7 +4,6 @@
 <?php include "includes/head.php" ?>
 
 <body>
-
 <div id="wrapper">
 
     <!-- Navigation -->
