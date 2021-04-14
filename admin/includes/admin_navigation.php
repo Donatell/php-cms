@@ -60,7 +60,8 @@
 					Categories</a>
 			</li>
 			<li class="active">
-				<a href="blank-page.html"><i class="fa fa-fw fa-file"></i>
+				<a href="/admin/comments.php?action=view_comments"><i class="fa
+				fa-fw fa-file"></i>
 					Comments</a>
 			</li>
 			<li>

@@ -1,23 +1,5 @@
-<?php
+<?php add_post() ?>
 
-if (isset($_POST['submit'])) {
-	$title = $_POST['title'];
-	$category_id = $_POST['category_id'];
-	$author = $_POST['author'];
-	$status = $_POST['status'];
-
-	$image = $_FILES['image']['name'];
-	$image_temp = $_FILES['image']['tmp_name'];
-
-	$tags = $_POST['tags'];
-	$content = $_POST['content'];
-	$date = date('d-m-y');
-	$comment_count = 0;
-
-	move_uploaded_file($image_temp, "../images/$image");
-}
-
-?>
 <h1 class="page-header">
 	Add a Post
 	<small></small>
@@ -29,8 +11,22 @@ if (isset($_POST['submit'])) {
 	</div>
 
 	<div class="form-group">
-		<label for="category">Post Category Id</label>
-		<input type="text" class="form-control" name="category_id" />
+		<label for="category_id">Category</label>
+		<select class="form-control" name="category_id">
+			<option selected>Choose Category...</option>
+			<?php
+			$categories_query = get_all_categories();
+
+			while ($row =
+				mysqli_fetch_assoc($categories_query)) {
+				$cat_id = $row['cat_id'];
+				$cat_title = $row['cat_title'];
+
+				echo "<option value='$cat_id'>$cat_title</option>";
+
+			}
+			?>
+		</select>
 	</div>
 
 	<div class="form-group">

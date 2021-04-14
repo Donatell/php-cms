@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php include "includes/admin_head.php" ?>
+<?php include 'includes/admin_head.php' ?>
 
 <body>
 
 <div id="wrapper">
 
 	<!-- Navigation -->
-	<?php include "includes/admin_navigation.php"; ?>
+	<?php include 'includes/admin_navigation.php'; ?>
 
 	<div id="page-wrapper">
 
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12">
+
 					<!-- Page Heading -->
 					<?php
 
@@ -23,14 +24,17 @@
 
 						switch ($action) {
 							case 'view_posts':
-								include "includes/view_posts.php";
+								include 'includes/view_posts.php';
 								break;
 							case 'add_post':
-								include "includes/add_post.php";
+								include 'includes/add_post.php';
+								break;
+							case 'edit_post':
+								include 'includes/edit_post.php';
 								break;
 
 							default:
-								echo "Routing Error";
+								echo 'Routing Error';
 								break;
 						}
 					}

@@ -4,6 +4,7 @@
 <?php include 'includes/admin_head.php' ?>
 
 <body>
+
 <div id="wrapper">
 
 	<!-- Navigation -->
@@ -12,22 +13,34 @@
 	<div id="page-wrapper">
 
 		<div class="container-fluid">
-
-			<!-- Page Heading -->
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">
-						Blank Page
-						<small>Subheading</small>
-					</h1>
-					<ol class="breadcrumb">
-						<li>
-							<i class="fa fa-dashboard"></i> <a href="index.php">Dashboard</a>
-						</li>
-						<li class="active">
-							<i class="fa fa-file"></i> Blank Page
-						</li>
-					</ol>
+
+					<!-- Page Heading -->
+					<?php
+
+					if (isset($_GET['action'])) {
+						$action = $_GET['action'];
+
+						switch ($action) {
+							case 'view_comments':
+								include 'includes/view_comments.php';
+								break;
+							case 'add_post':
+								include 'includes/add_post.php';
+								break;
+							case 'edit_post':
+								include 'includes/edit_post.php';
+								break;
+
+							default:
+								echo 'Routing Error';
+								break;
+						}
+					}
+
+					?>
+
 				</div>
 			</div>
 			<!-- /.row -->
