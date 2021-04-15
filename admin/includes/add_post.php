@@ -34,6 +34,8 @@
 		<input type="text" class="form-control" name="author" />
 	</div>
 
+	<!--@TODO Add 'Publish Now' checkbox
+	 Status 'Published' if Checked else 'draft'-->
 	<div class="form-group">
 		<label for="status">Post Status</label>
 		<input type="text" class="form-control" name="status" />

@@ -1,7 +1,18 @@
-<?php delete_post() ?>
+<?php
+
+delete_comment();
+
+if (isset($_GET['approve'])) {
+	approve_comment_by_id($_GET['approve']);
+}
+
+if (isset($_GET['disapprove'])) {
+	disapprove_comment_by_id($_GET['disapprove']);
+}
+?>
 
 <h1 class="page-header">
-	Posts
+	Comments
 	<small></small>
 </h1>
 <table class="table table-bordered table-hover">
@@ -18,7 +29,7 @@
 	</tr>
 	</thead>
 	<tbody>
-	<!--Populate with Posts-->
+	<!--Populate with Comments-->
 	<?php find_all_comments() ?>
 	</tbody>
 </table>
