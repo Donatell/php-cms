@@ -379,3 +379,62 @@ function get_approved_comments_by_post_id($post_id): mysqli_result|bool {
 
 	return $approved_comments_query;
 }
+
+// Users
+function find_all_users() {
+	global $connection;
+
+	$query = "SELECT * FROM users";
+	$users_query =
+		mysqli_query($connection, $query);
+
+	confirm_query($users_query);
+
+	while ($row =
+		mysqli_fetch_assoc($users_query)) {
+		$id = $row['user_id'];
+		$username = $row['username'];
+		$firstname = $row['user_firstname'];
+		$lastname = $row['user_lastname'];
+		$email = $row['user_email'];
+		$role = $row['user_role'];
+
+		echo "<tr>";
+		echo "<td>$id</td>";
+		echo "<td>$username</td>";
+		echo "<td>$firstname</td>";
+		echo "<td>$lastname</td>";
+		echo "<td>$email</td>";
+		echo "<td>$role</td>";
+		// echo "<td><img src='/images/$post_image' alt='' width='100px'></td>";
+		echo "<td><a href='users.php?action=view_users&delete=$id'>Delete</a><br>" .
+			"<a href='users.php?action=edit_user&edit=$id'>Edit</a></td>";
+		echo "</tr>";
+	}
+}
+
+function add_user() {
+	global $connection;
+
+	$username = mysqli_real_escape_string($connection, $_POST['username']);
+	$first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
+	$last_name = mysqli_real_escape_string($connection, $_POST['last_name']);
+	$email = mysqli_real_escape_string($connection, $_POST['email']);
+	$password = mysqli_real_escape_string($connection, $_POST['password']);
+	$role = mysqli_real_escape_string($connection, $_POST['role']);
+
+	//	$image = $_FILES['image']['name'];
+	//	$image_temp = $_FILES['image']['tmp_name'];
+
+	$query =
+		"INSERT INTO users (username, user_password, user_firstname, user_lastname, user_email, user_role) VALUES ('$username', '$password', '$first_name', '$last_name', '$email', '$role')";
+
+	$add_user_query = mysqli_query($connection, $query);
+
+	confirm_query($add_user_query);
+
+	//	move_uploaded_file($image_temp, "../images/$image");
+
+	header('Location: users.php?action=view_users');
+
+}

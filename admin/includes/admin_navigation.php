@@ -73,10 +73,12 @@
 					<i class="fa fa-fw fa-caret-down"></i></a>
 				<ul id="users_dropdown" class="collapse">
 					<li>
-						<a href="#">View Users</a>
+						<a href="/admin/users.php?action=view_users">View
+						                                             Users</a>
 					</li>
 					<li>
-						<a href="#">User Actions</a>
+						<a href="/admin/users.php?action=add_user">Add
+						                                           User</a>
 					</li>
 				</ul>
 			</li>
