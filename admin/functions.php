@@ -131,7 +131,6 @@ function find_all_posts() {
 
 		$post_category_name = get_category_name_by_id($post_category_id);
 
-		// TODO Add 'Publish' feature to change status
 		echo "<tr>";
 		echo "<td>$post_id</td>";
 		echo "<td>$post_author</td>";
@@ -144,6 +143,11 @@ function find_all_posts() {
 		echo "<td>$post_comment_count</td>";
 		echo "<td><a href='posts.php?action=view_posts&delete=$post_id'>Delete</a><br>" .
 			"<a href='posts.php?action=edit_post&edit=$post_id'>Edit</a></td>";
+		if ($post_status === 'draft' || $post_status === 'unpublished') {
+			echo "<td><a href='posts.php?action=view_posts&publish=$post_id'>Publish</a><br></td>";
+		} else {
+			echo "<td><a href='posts.php?action=view_posts&unpublish=$post_id'>Unpublish</a></td>";
+		}
 		echo "</tr>";
 	}
 }
@@ -155,7 +159,6 @@ function add_post() {
 		$title = mysqli_real_escape_string($connection, $_POST['title']);
 		$category_id = $_POST['category_id'];
 		$author = $_POST['author'];
-		$status = $_POST['status'];
 
 		$image = $_FILES['image']['name'];
 		$image_temp = $_FILES['image']['tmp_name'];
@@ -244,6 +247,16 @@ function get_post_by_id($id): array|null {
 	} else {
 		return null;
 	}
+}
+
+function set_post_status_post_by_id($id, $status) {
+	global $connection;
+
+	$query = "UPDATE posts SET post_status = '$status' WHERE post_id = $id";
+	$set_post_status_query =
+		mysqli_query($connection, $query);
+
+	confirm_query($set_post_status_query);
 }
 
 // Comments

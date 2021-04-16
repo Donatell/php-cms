@@ -21,6 +21,7 @@ if (isset($_GET['post_id'])) {
 	$tags = $row['post_tags'];
 	$comment_count = $row['post_comment_count'];
 }
+
 if (isset($_POST['submit_comment'])) {
 	add_comment();
 }

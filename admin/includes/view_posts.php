@@ -1,4 +1,16 @@
-<?php delete_post() ?>
+<?php
+
+delete_post();
+
+if (isset($_GET['publish'])) {
+	set_post_status_post_by_id($_GET['publish'], 'publish');
+}
+
+if (isset($_GET['unpublish'])) {
+	set_post_status_post_by_id($_GET['unpublish'], 'unpublish');
+}
+
+?>
 
 <h1 class="page-header">
 	Posts
