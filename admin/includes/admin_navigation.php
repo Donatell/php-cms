@@ -1,3 +1,10 @@
+<?php
+
+$first_name = $_SESSION['first_name'];
+$last_name = $_SESSION['last_name'];
+
+?>
+
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	<!-- Brand and toggle get grouped for better mobile display -->
 	<div class="navbar-header">
@@ -17,7 +24,9 @@
 		<li><a href="../index.php">Homepage</a></li>
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-						class="fa fa-user"></i> John Smith <b
+						class="fa fa-user"></i> <?php echo
+				"$first_name $last_name"
+				?> <b
 						class="caret"></b></a>
 			<ul class="dropdown-menu">
 				<li>
@@ -25,8 +34,8 @@
 				</li>
 				<li class="divider"></li>
 				<li>
-					<a href="#"><i class="fa fa-fw fa-power-off"></i> Log
-					                                                  Out</a>
+					<a href="../../includes/logout.php"><i class="fa fa-fw
+					fa-power-off"></i> Log Out</a>
 				</li>
 			</ul>
 		</li>
@@ -59,7 +68,7 @@
 				<a href="/admin/categories.php"><i class="fa fa-fw fa-wrench"></i>
 					Categories</a>
 			</li>
-			<li class="active">
+			<li>
 				<a href="/admin/comments.php?action=view_comments"><i class="fa
 				fa-fw fa-file"></i>
 					Comments</a>

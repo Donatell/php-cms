@@ -30,7 +30,11 @@ if (isset($_POST['login'])) {
 		$_SESSION['first_name'] = $db_first_name;
 		$_SESSION['last_name'] = $db_last_name;
 		$_SESSION['role'] = $db_role;
+
+		header('Location: ../admin/index.php');
+
+	} else {
+		header('Location: ../index.php');
 	}
-	
-	header('Location: ../index.php');
+
 }

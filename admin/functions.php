@@ -427,7 +427,7 @@ function add_user() {
 	//	$image_temp = $_FILES['image']['tmp_name'];
 
 	$query =
-		"INSERT INTO users (username, user_password, user_first_name, user_last_name, user_email, user_role) VALUES ('$username', '$password', '$first_name', '$last_name', '$email', '$role')";
+		"INSERT INTO users (username, user_password, user_first_name, user_last_name, user_email, user_role) VALUES ('$username', '$password', '$first_name', '$last_name', '$email', $role)";
 
 	$add_user_query = mysqli_query($connection, $query);
 
@@ -522,7 +522,7 @@ function update_user_by_id($user_id) {
 	//		}
 
 	$query =
-		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = '$role' WHERE user_id = $user_id";
+		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = $role WHERE user_id = $user_id";
 
 	$update_user_query = mysqli_query($connection, $query);
 

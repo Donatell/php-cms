@@ -7,6 +7,10 @@ include "functions.php";
 
 session_start();
 
+if ($_SESSION['role'] === null || $_SESSION['role'] !== '1') {
+	header('Location: ../../index.php');
+}
+
 ?>
 <head>
 
