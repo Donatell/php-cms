@@ -1,13 +1,7 @@
 <?php
 
-delete_post();
-
-if (isset($_GET['publish'])) {
-	set_post_status_post_by_id($_GET['publish'], 'publish');
-}
-
-if (isset($_GET['unpublish'])) {
-	set_post_status_post_by_id($_GET['unpublish'], 'unpublish');
+if (isset($_GET['delete'])) {
+	delete_user_by_id($_GET['delete']);
 }
 
 ?>

@@ -1,7 +1,13 @@
-<?php ob_start() ?>
-<?php include "../includes/db.php" ?>
-<?php include "functions.php"; ?>
+<?php
 
+ob_start();
+
+include "../includes/db.php";
+include "functions.php";
+
+session_start();
+
+?>
 <head>
 
 	<meta charset="utf-8">

@@ -5,7 +5,6 @@
 <?php include "includes/head.php" ?>
 
 <?php
-include "./admin/functions.php";
 
 if (isset($_GET['post_id'])) {
 	$row = get_post_by_id($_GET['post_id']);

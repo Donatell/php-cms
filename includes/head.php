@@ -1,4 +1,9 @@
-<?php include 'includes/db.php' ?>
+<?php
+
+include 'includes/db.php';
+include "admin/functions.php";
+
+?>
 
 <head>
 

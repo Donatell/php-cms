@@ -394,10 +394,10 @@ function find_all_users() {
 		mysqli_fetch_assoc($users_query)) {
 		$id = $row['user_id'];
 		$username = $row['username'];
-		$firstname = $row['user_firstname'];
-		$lastname = $row['user_lastname'];
+		$firstname = $row['user_first_name'];
+		$lastname = $row['user_last_name'];
 		$email = $row['user_email'];
-		$role = $row['user_role'];
+		$role = get_role_title_by_id($row['user_role']);
 
 		echo "<tr>";
 		echo "<td>$id</td>";
@@ -427,7 +427,7 @@ function add_user() {
 	//	$image_temp = $_FILES['image']['tmp_name'];
 
 	$query =
-		"INSERT INTO users (username, user_password, user_firstname, user_lastname, user_email, user_role) VALUES ('$username', '$password', '$first_name', '$last_name', '$email', '$role')";
+		"INSERT INTO users (username, user_password, user_first_name, user_last_name, user_email, user_role) VALUES ('$username', '$password', '$first_name', '$last_name', '$email', '$role')";
 
 	$add_user_query = mysqli_query($connection, $query);
 
@@ -437,4 +437,100 @@ function add_user() {
 
 	header('Location: users.php?action=view_users');
 
+}
+
+function get_user_by_id($user_id) {
+	global $connection;
+
+	$query = "SELECT * FROM users WHERE user_id = $user_id";
+	$edit_user_query =
+		mysqli_query($connection, $query);
+
+	confirm_query($edit_user_query);
+
+	return mysqli_fetch_assoc($edit_user_query);
+}
+
+function get_user_by_username($username): array|bool|null {
+	global $connection;
+
+	$query = "SELECT * FROM users WHERE username = '$username'";
+	$user_query =
+		mysqli_query($connection, $query);
+
+	confirm_query($user_query);
+
+	return mysqli_fetch_assoc($user_query);
+}
+
+// Roles
+function get_all_roles(): mysqli_result|bool {
+	global $connection;
+
+	$query = 'SELECT * FROM roles';
+	$roles_query =
+		mysqli_query($connection, $query);
+
+	confirm_query($roles_query);
+
+	return $roles_query;
+}
+
+function get_role_title_by_id($id) {
+	global $connection;
+
+	$query = "SELECT * FROM roles WHERE role_id = $id";
+	$role_query =
+		mysqli_query($connection, $query);
+
+	confirm_query($role_query);
+
+	$row = mysqli_fetch_assoc($role_query);
+
+	return $row['role_title'];
+}
+
+function delete_user_by_id($id) {
+	global $connection;
+
+	$user_id = $_GET['delete'];
+
+	$query =
+		"DELETE FROM users WHERE user_id = $user_id";
+	$delete_user_query = mysqli_query($connection, $query);
+
+	confirm_query($delete_user_query);
+
+	header('Location: users.php?action=view_users');
+}
+
+function update_user_by_id($user_id) {
+	global $connection;
+
+	$username = mysqli_real_escape_string($connection, $_POST['username']);
+	$first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
+	$last_name = mysqli_real_escape_string($connection, $_POST['last_name']);
+	$email = mysqli_real_escape_string($connection, $_POST['email']);
+	$role = mysqli_real_escape_string($connection, $_POST['role']);
+
+	//		if (empty($_FILES['image']['name'])) {
+	//			$row = get_post_by_id($post_id);
+	//			$image = $row['post_image'];
+	//		} else {
+	//			$image = $_FILES['image']['name'];
+	//			$image_temp = $_FILES['image']['tmp_name'];
+	//		}
+
+	$query =
+		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = '$role' WHERE user_id = $user_id";
+
+	$update_user_query = mysqli_query($connection, $query);
+
+	confirm_query($update_user_query);
+
+	//		if (isset($image_temp)) {
+	//			move_uploaded_file($image_temp, "../images/$image");
+	//		}
+
+	header('Location: users.php?action=view_users');
 }

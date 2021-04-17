@@ -16,28 +16,23 @@ if (isset($_POST['submit'])) {
 		<input type="text" class="form-control" name="username" />
 	</div>
 
-	<!--<div class="form-group">-->
-	<!--	<label for="category_id">Category</label>-->
-	<!--	<select class="form-control" name="category_id">-->
-	<!--		<option selected>Choose Category...</option>-->
-	<!--		--><?php
-	//		$categories_query = get_all_categories();
-	//
-	//		while ($row =
-	//			mysqli_fetch_assoc($categories_query)) {
-	//			$cat_id = $row['cat_id'];
-	//			$cat_title = $row['cat_title'];
-	//
-	//			echo "<option value='$cat_id'>$cat_title</option>";
-	//
-	//		}
-	//		?>
-	<!--	</select>-->
-	<!--</div>-->
-
 	<div class="form-group">
-		<label for="title">Role</label>
-		<input type="text" class="form-control" name="role" />
+		<label for="category_id">Role</label>
+		<select class="form-control" name="role">
+			<option selected>Choose Role...</option>
+			<?php
+			$roles_query = get_all_roles();
+
+			while ($row =
+				mysqli_fetch_assoc($roles_query)) {
+				$role_id = $row['role_id'];
+				$role_title = $row['role_title'];
+
+				echo "<option value='$role_id'>$role_title</option>";
+
+			}
+			?>
+		</select>
 	</div>
 
 	<div class="form-group">
