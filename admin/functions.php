@@ -152,7 +152,7 @@ function find_all_posts() {
 
 		echo "<td>$post_id</td>";
 		echo "<td>$post_author</td>";
-		echo "<td>$post_title</td>";
+		echo "<td><a href='/post.php?post_id=$post_id'>$post_title</a></td>";
 		echo "<td>$post_date</td>";
 		echo "<td>$post_category_name</td>";
 		echo "<td>$post_status</td>";
@@ -364,6 +364,10 @@ function add_comment() {
 	$author = mysqli_real_escape_string($connection, $_POST['author']);
 	$email = mysqli_real_escape_string($connection, $_POST['email']);
 	$content = mysqli_real_escape_string($connection, $_POST['content']);
+	
+	if (empty($author) || empty($email) || empty($content)) {
+		return;
+	}
 
 	$comment_query =
 		"INSERT INTO comments (comment_post_id, comment_author, comment_email, comment_content) VALUES ($post_id, '$author', '$email', '$content')";
