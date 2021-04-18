@@ -10,6 +10,19 @@ if (isset($_GET['delete'])) {
 	Users
 	<small></small>
 </h1>
+<?php
+
+if (isset($_GET['created'])) {
+	$username = $_GET['created'];
+	echo "<div class='alert alert-success' role='alert'>User \"$username\" has been created</div>";
+}
+
+if (isset($_GET['edited'])) {
+	$username = $_GET['edited'];
+	echo "<div class='alert alert-success' role='alert'>User \"$username\" has been updated</div>";
+}
+
+?>
 <table class="table table-bordered table-hover">
 	<thead>
 	<tr>

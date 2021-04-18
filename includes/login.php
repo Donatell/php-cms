@@ -16,20 +16,15 @@ if (isset($_POST['login'])) {
 	}
 
 	// extract user data if user exists
+
+	$db_user_id = $row['user_id'];
 	$db_username = $row['username'];
 	$db_password = $row['user_password'];
-	$db_email = $row['user_email'];
-	$db_first_name = $row['user_first_name'];
-	$db_last_name = $row['user_last_name'];
-	$db_role = $row['user_role'];
 
 	// start session if username and password are valid
 	if ($password === $db_password && $username === $db_username) {
 		session_start();
-		$_SESSION['username'] = $db_username;
-		$_SESSION['first_name'] = $db_first_name;
-		$_SESSION['last_name'] = $db_last_name;
-		$_SESSION['role'] = $db_role;
+		$_SESSION['user_id'] = $db_user_id;
 
 		header('Location: ../admin/index.php');
 

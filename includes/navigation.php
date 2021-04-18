@@ -27,6 +27,19 @@
 				}
 				?>
 				<li><a href='/admin'>Admin</a></li>
+
+				<?php
+
+				// if user is logged in, is admin and current page is single
+				// post page, show "edit post" link in navbar
+				if (isset($_SESSION['role']) && $_SESSION['role'] === '1' &&
+					isset($_GET['post_id'])) {
+					$post_id = $_GET['post_id'];
+					echo "<li><a href='/admin/posts.php?action=edit_post&edit=$post_id'>Edit Post</a></li>";
+				}
+
+				?>
+
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->

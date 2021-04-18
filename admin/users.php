@@ -32,6 +32,9 @@
 							case 'edit_user':
 								include 'includes/edit_user.php';
 								break;
+							case 'view_profile':
+								include 'includes/view_profile.php';
+								break;
 
 							default:
 								echo 'Routing Error';

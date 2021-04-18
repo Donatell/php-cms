@@ -30,7 +30,8 @@ $last_name = $_SESSION['last_name'];
 						class="caret"></b></a>
 			<ul class="dropdown-menu">
 				<li>
-					<a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+					<a href="/admin/users.php?action=view_profile"><i class="fa fa-fw fa-user"></i>
+						Profile</a>
 				</li>
 				<li class="divider"></li>
 				<li>
@@ -92,7 +93,8 @@ $last_name = $_SESSION['last_name'];
 				</ul>
 			</li>
 			<li>
-				<a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i>
+				<a href="/admin/users.php?action=view_profile"><i class="fa
+				fa-fw fa-dashboard"></i>
 					Profile</a>
 			</li>
 		</ul>

@@ -3,6 +3,20 @@
 include 'includes/db.php';
 include "admin/functions.php";
 
+session_start();
+
+// check if user logged in
+if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== null) {
+	$user_id = $_SESSION['user_id'];
+	$row = get_user_by_id($user_id);
+	$_SESSION['username'] = $row['username'];
+	$_SESSION['first_name'] = $row['user_first_name'];
+	$_SESSION['last_name'] = $row['user_last_name'];
+	$_SESSION['email'] = $row['user_email'];
+	$_SESSION['role'] = $row['user_role'];
+	$_SESSION['password'] = $row['user_password'];
+}
+
 ?>
 
 <head>

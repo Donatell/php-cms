@@ -107,6 +107,15 @@ function find_all_categories() {
 
 }
 
+function count_categories() {
+	global $connection;
+
+	$query = "SELECT COUNT(*) AS total FROM categories";
+	$count_categories_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_categories_query)['total'];
+}
+
 // Posts
 function find_all_posts() {
 	global $connection;
@@ -132,6 +141,15 @@ function find_all_posts() {
 		$post_category_name = get_category_name_by_id($post_category_id);
 
 		echo "<tr>";
+
+		?>
+
+		<td><input type='checkbox' class='checkbox' name='checkbox_array[]'
+		           value="<?php echo $post_id ?>"
+			></td>
+
+		<?php
+
 		echo "<td>$post_id</td>";
 		echo "<td>$post_author</td>";
 		echo "<td>$post_title</td>";
@@ -143,10 +161,10 @@ function find_all_posts() {
 		echo "<td>$post_comment_count</td>";
 		echo "<td><a href='posts.php?action=view_posts&delete=$post_id'>Delete</a><br>" .
 			"<a href='posts.php?action=edit_post&edit=$post_id'>Edit</a></td>";
-		if ($post_status === 'draft' || $post_status === 'unpublished') {
+		if ($post_status === 'draft') {
 			echo "<td><a href='posts.php?action=view_posts&publish=$post_id'>Publish</a><br></td>";
 		} else {
-			echo "<td><a href='posts.php?action=view_posts&unpublish=$post_id'>Unpublish</a></td>";
+			echo "<td><a href='posts.php?action=view_posts&withdraw=$post_id'>Withdraw</a></td>";
 		}
 		echo "</tr>";
 	}
@@ -160,6 +178,12 @@ function add_post() {
 		$category_id = $_POST['category_id'];
 		$author = $_POST['author'];
 
+		if (isset($_POST['publish_now']) && $_POST['publish_now'] === 'yes') {
+			$status = 'published';
+		} else {
+			$status = 'draft';
+		}
+
 		$image = $_FILES['image']['name'];
 		$image_temp = $_FILES['image']['tmp_name'];
 
@@ -168,7 +192,7 @@ function add_post() {
 		$date = date('d-m-y');
 
 		$query =
-			"INSERT INTO posts (post_category_id, post_title, post_author, post_date, post_image, post_content, post_tags) VALUES ('$category_id', '$title', '$author', '$date', '$image', '$content', '$tags')";
+			"INSERT INTO posts (post_category_id, post_title, post_status,post_author, post_date, post_image, post_content, post_tags) VALUES ('$category_id', '$title', '$status','$author', '$date', '$image', '$content', '$tags')";
 
 		$add_post_query = mysqli_query($connection, $query);
 
@@ -176,7 +200,8 @@ function add_post() {
 
 		move_uploaded_file($image_temp, "../images/$image");
 
-		header('Location: posts.php?action=view_posts');
+		$title = urlencode($title);
+		header("Location: posts.php?action=view_posts&created=$title");
 
 	}
 }
@@ -188,7 +213,12 @@ function update_post($post_id) {
 		$title = mysqli_real_escape_string($connection, $_POST['title']);
 		$category_id = $_POST['category_id'];
 		$author = $_POST['author'];
-		$status = $_POST['status'];
+
+		if (isset($_POST['publish_now']) && $_POST['publish_now'] === 'yes') {
+			$status = 'published';
+		} else {
+			$status = 'draft';
+		}
 
 		if (empty($_FILES['image']['name'])) {
 			$row = get_post_by_id($post_id);
@@ -212,8 +242,8 @@ function update_post($post_id) {
 			move_uploaded_file($image_temp, "../images/$image");
 		}
 
-		header('Location: posts.php?action=view_posts');
-
+		$title = urlencode($title);
+		header("Location: posts.php?action=view_posts&edited=$title");
 	}
 }
 
@@ -229,6 +259,14 @@ function delete_post() {
 
 		header('Location: posts.php?action=view_posts');
 	}
+}
+
+function delete_post_by_id($post_id) {
+	global $connection;
+
+	$query = "DELETE FROM posts WHERE post_id = $post_id";
+	$delete_post_query = mysqli_query($connection, $query);
+	confirm_query($delete_post_query);
 }
 
 function get_post_by_id($id): array|null {
@@ -257,6 +295,25 @@ function set_post_status_post_by_id($id, $status) {
 		mysqli_query($connection, $query);
 
 	confirm_query($set_post_status_query);
+}
+
+function count_posts() {
+	global $connection;
+
+	$query = "SELECT COUNT(*) AS total FROM posts";
+	$count_posts_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_posts_query)['total'];
+}
+
+function count_posts_with_status($status) {
+	global $connection;
+
+	$query =
+		"SELECT COUNT(*) AS total FROM posts WHERE post_status = '$status'";
+	$count_posts_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_posts_query)['total'];
 }
 
 // Comments
@@ -380,6 +437,25 @@ function get_approved_comments_by_post_id($post_id): mysqli_result|bool {
 	return $approved_comments_query;
 }
 
+function count_comments() {
+	global $connection;
+
+	$query = "SELECT COUNT(*) AS total FROM comments";
+	$count_comments_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_comments_query)['total'];
+}
+
+function count_pending_comments() {
+	global $connection;
+
+	$query =
+		"SELECT COUNT(*) AS total FROM comments WHERE comment_status = 'pending'";
+	$count_comments_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_comments_query)['total'];
+}
+
 // Users
 function find_all_users() {
 	global $connection;
@@ -434,8 +510,8 @@ function add_user() {
 	confirm_query($add_user_query);
 
 	//	move_uploaded_file($image_temp, "../images/$image");
-
-	header('Location: users.php?action=view_users');
+	$username = urlencode($username);
+	header("Location: users.php?action=view_users&created=$username");
 
 }
 
@@ -461,6 +537,15 @@ function get_user_by_username($username): array|bool|null {
 	confirm_query($user_query);
 
 	return mysqli_fetch_assoc($user_query);
+}
+
+function count_users() {
+	global $connection;
+
+	$query = "SELECT COUNT(*) AS total FROM users";
+	$count_users_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_users_query)['total'];
 }
 
 // Roles
@@ -532,5 +617,41 @@ function update_user_by_id($user_id) {
 	//			move_uploaded_file($image_temp, "../images/$image");
 	//		}
 
-	header('Location: users.php?action=view_users');
+	$username = urlencode($username);
+	header("Location: users.php?action=view_users&edited=$username");
+}
+
+/**
+ * Send update query, confirm it and refresh page
+ * @param $user_id
+ */
+function update_user_profile_by_id($user_id) {
+	global $connection;
+
+	$username = mysqli_real_escape_string($connection, $_POST['username']);
+	$first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
+	$last_name = mysqli_real_escape_string($connection, $_POST['last_name']);
+	$email = mysqli_real_escape_string($connection, $_POST['email']);
+	$role = mysqli_real_escape_string($connection, $_POST['role']);
+
+	//		if (empty($_FILES['image']['name'])) {
+	//			$row = get_post_by_id($post_id);
+	//			$image = $row['post_image'];
+	//		} else {
+	//			$image = $_FILES['image']['name'];
+	//			$image_temp = $_FILES['image']['tmp_name'];
+	//		}
+
+	$query =
+		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = $role WHERE user_id = $user_id";
+
+	$update_profile_query = mysqli_query($connection, $query);
+
+	confirm_query($update_profile_query);
+
+	//		if (isset($image_temp)) {
+	//			move_uploaded_file($image_temp, "../images/$image");
+	//		}
+
+	header('Location: users.php?action=view_profile');
 }

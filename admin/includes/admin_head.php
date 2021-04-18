@@ -7,8 +7,29 @@ include "functions.php";
 
 session_start();
 
-if ($_SESSION['role'] === null || $_SESSION['role'] !== '1') {
+// check if user logged in
+if ($_SESSION['user_id'] === null) {
 	header('Location: ../../index.php');
+} else {
+	$user_id = $_SESSION['user_id'];
+	$row = get_user_by_id($user_id);
+	$_SESSION['username'] = $row['username'];
+	$_SESSION['first_name'] = $row['user_first_name'];
+	$_SESSION['last_name'] = $row['user_last_name'];
+	$_SESSION['email'] = $row['user_email'];
+	$_SESSION['role'] = $row['user_role'];
+	$_SESSION['password'] = $row['user_password'];
+
+	// show dashboard if the user is admin (1), else show profile
+	if ($_SESSION['role'] !== '1') {
+
+		// avoid redirection loop
+		if ($_SERVER['REQUEST_URI'] !==
+			'/admin/users.php?action=view_profile') {
+			header('Location: ./users.php?action=view_profile');
+		}
+	}
+
 }
 
 ?>
@@ -40,4 +61,54 @@ if ($_SESSION['role'] === null || $_SESSION['role'] !== '1') {
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
+	<!-- Column chart scripts-->
+	<script type="text/javascript"
+	        src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+		google.charts.load('current', { 'packages': ['bar'] });
+		google.charts.setOnLoadCallback(drawChart);
+
+		function drawChart() {
+			const data = google.visualization.arrayToDataTable([
+				['Date', 'Count'],
+
+				<?php
+
+				$data_element =
+					['Published Posts',
+					 'Draft Posts',
+					 'Categories',
+					 'Users',
+					 'Pending Comments'];
+				$count_element =
+					[count_posts_with_status('published'),
+					 count_posts_with_status('draft'),
+					 count_categories(),
+					 count_users(),
+					 count_pending_comments()];
+
+				$arr_length = count($data_element);
+				for ($i = 0; $i < $arr_length; $i++) {
+					echo "['$data_element[$i]', $count_element[$i]], ";
+				}
+
+				?>
+			]);
+
+			const options = {
+				chart: {
+					title: 'Company Performance',
+					subtitle: 'Sales, Expenses, and Profit: 2014-2017'
+				}
+			};
+
+			const chart = new google.charts.Bar(
+				document.getElementById('columnchart_material'));
+
+			chart.draw(data, google.charts.Bar.convertOptions(options));
+		}
+	</script>
+
+	<!-- CKEditor 5 -->
+	<script src="https://cdn.ckeditor.com/ckeditor5/27.0.0/classic/ckeditor.js"></script>
 </head>

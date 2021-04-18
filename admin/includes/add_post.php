@@ -34,11 +34,12 @@
 		<input type="text" class="form-control" name="author" />
 	</div>
 
-	<!--@TODO Add 'Publish Now' checkbox
-	 Status 'Published' if Checked else 'draft'-->
-	<div class="form-group">
-		<label for="status">Post Status</label>
-		<input type="text" class="form-control" name="status" />
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="publish_now" value="yes" />Publish Now
+		</label>
+		<span class="help-block">If unchecked, the post will be saved as
+		                         draft</span>
 	</div>
 
 	<div class="form-group">
@@ -55,15 +56,13 @@
 		<label for="content">Post Content</label>
 		<textarea class="form-control"
 		          name="content"
-		          id=""
-		          rows="10"
-		          cols="30"></textarea>
+		          id="editor"></textarea>
 	</div>
 
 	<div class="form-group">
 		<input class="btn btn-primary"
 		       type="submit"
 		       name="submit"
-		       value="Publish Post">
+		       value="Add Post">
 	</div>
 </form>

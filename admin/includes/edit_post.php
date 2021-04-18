@@ -60,10 +60,21 @@ if (isset($_GET['edit'])) {
 		       name="author" />
 	</div>
 
-	<div class="form-group">
-		<label for="status">Status</label>
-		<input value="<?php echo $status ?>" type="text" class="form-control"
-		       name="status" />
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="publish_now" value="yes"
+
+				<?php
+
+				if ($status ===
+					'published') {
+					echo 'checked';
+				}
+
+				?>/>Publish Now
+		</label>
+		<span class="help-block">If unchecked, the post will be saved as
+		                         draft</span>
 	</div>
 
 	<div class="form-group">
@@ -86,9 +97,7 @@ if (isset($_GET['edit'])) {
 		<label for="content">Content</label>
 		<textarea class="form-control"
 		          name="content"
-		          id=""
-		          rows="10"
-		          cols="30"><?php echo $content ?></textarea>
+		          id="editor"><?php echo $content ?></textarea>
 	</div>
 
 	<div class="form-group">
