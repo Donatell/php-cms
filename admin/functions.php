@@ -10,6 +10,16 @@ function confirm_query($query) {
 	}
 }
 
+function get_salt() {
+	global $connection;
+
+	$query = 'SELECT randSalt FROM users';
+	$salt_query = mysqli_query($connection, $query);
+	confirm_query($salt_query);
+
+	return mysqli_fetch_array($salt_query)['randSalt'];
+}
+
 //Categories
 function insert_category() {
 
@@ -100,7 +110,7 @@ function find_all_categories() {
 		echo "<tr>" .
 			"<td>$cat_id</td>" .
 			"<td>$cat_title</td>" .
-			"<td><a href='categories.php?delete=$cat_id'>Delete</a><br>" .
+			"<td><a href='categories.php?delete=$cat_id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>" .
 			"<a href='categories.php?edit=$cat_id'>Edit</a></td>" .
 			"</tr>";
 	}
@@ -159,7 +169,7 @@ function find_all_posts() {
 		echo "<td><img src='/images/$post_image' alt='' width='100px'></td>";
 		echo "<td>$post_tags</td>";
 		echo "<td>$post_comment_count</td>";
-		echo "<td><a href='posts.php?action=view_posts&delete=$post_id'>Delete</a><br>" .
+		echo "<td><a href='posts.php?action=view_posts&delete=$post_id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>" .
 			"<a href='posts.php?action=edit_post&edit=$post_id'>Edit</a></td>";
 		if ($post_status === 'draft') {
 			echo "<td><a href='posts.php?action=view_posts&publish=$post_id'>Publish</a><br></td>";
@@ -350,7 +360,7 @@ function find_all_comments() {
 		echo "<a href='comments.php?action=view_comments&approve=$id'>Approve
 		</a><br>";
 		echo "<a href='comments.php?action=view_comments&disapprove=$id'>Disapprove</a><br>";
-		echo "<a href='comments.php?action=view_comments&delete=$id&post_id=$post_id'>Delete</a><br>";
+		echo "<a href='comments.php?action=view_comments&delete=$id&post_id=$post_id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>";
 		echo "</td>";
 		echo "</tr>";
 	}
@@ -364,7 +374,7 @@ function add_comment() {
 	$author = mysqli_real_escape_string($connection, $_POST['author']);
 	$email = mysqli_real_escape_string($connection, $_POST['email']);
 	$content = mysqli_real_escape_string($connection, $_POST['content']);
-	
+
 	if (empty($author) || empty($email) || empty($content)) {
 		return;
 	}
@@ -487,7 +497,7 @@ function find_all_users() {
 		echo "<td>$email</td>";
 		echo "<td>$role</td>";
 		// echo "<td><img src='/images/$post_image' alt='' width='100px'></td>";
-		echo "<td><a href='users.php?action=view_users&delete=$id'>Delete</a><br>" .
+		echo "<td><a href='users.php?action=view_users&delete=$id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>" .
 			"<a href='users.php?action=edit_user&edit=$id'>Edit</a></td>";
 		echo "</tr>";
 	}
@@ -505,6 +515,8 @@ function add_user() {
 
 	//	$image = $_FILES['image']['name'];
 	//	$image_temp = $_FILES['image']['tmp_name'];
+
+	$password = crypt($password, get_salt());
 
 	$query =
 		"INSERT INTO users (username, user_password, user_first_name, user_last_name, user_email, user_role) VALUES ('$username', '$password', '$first_name', '$last_name', '$email', $role)";
@@ -550,6 +562,41 @@ function count_users() {
 	$count_users_query = mysqli_query($connection, $query);
 
 	return mysqli_fetch_assoc($count_users_query)['total'];
+}
+
+function register_user() {
+	global $connection;
+
+	$username = mysqli_real_escape_string($connection, $_POST['username']);
+	$email = mysqli_real_escape_string($connection, $_POST['email']);
+	$password = mysqli_real_escape_string($connection, $_POST['password']);
+
+	$password = crypt($password, get_salt());
+
+	$query =
+		"INSERT INTO users (username, user_password, user_email) VALUES ('$username', '$password', '$email')";
+
+	$add_user_query = mysqli_query($connection, $query);
+
+	//	if (mysqli_error($connection) ===
+	//		"Duplicate entry '$username' for key 'username'") {
+	//		$username_has_error = 'has-error';
+	//		$username_error_message = 'The username is already taken';
+	//		return;
+	//	} else {
+	//		$username_has_error = 'has-success';
+	//	}
+	//
+	//	if (mysqli_error($connection) ===
+	//		"Duplicate entry '$email' for key 'user_email'") {
+	//		$email_has_error = 'has-error';
+	//		$email_error_message = 'The email is already taken';
+	//		return;
+	//	} else {
+	//		$email_has_error = 'has-success';
+	//	}
+
+	confirm_query($add_user_query);
 }
 
 // Roles
