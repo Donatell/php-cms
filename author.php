@@ -7,9 +7,8 @@
 <body>
 
 <?php
-if (isset($_GET['cat_id'])) {
-	$category_id = $_GET['cat_id'];
-	$category_title = get_category_name_by_id($category_id);
+if (isset($_GET['author'])) {
+	$author = $_GET['author'];
 } else {
 	header('Location: /');
 }
@@ -27,13 +26,13 @@ if (isset($_GET['cat_id'])) {
 		<div class="col-md-8">
 
 			<h1 class="page-header">
-				Posts about <?php echo $category_title ?>
+				Posts by <?php echo $author ?>
 				<small></small>
 			</h1>
 
 			<?php
 			$query =
-				"SELECT * FROM posts WHERE post_category_id = $category_id AND post_status = 'published'";
+				"SELECT * FROM posts WHERE post_author = $author AND post_status = 'published'";
 			$posts_query = mysqli_query($connection, $query);
 
 			if (mysqli_num_rows($posts_query) === 0) {
