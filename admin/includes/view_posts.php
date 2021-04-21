@@ -17,12 +17,14 @@ if (isset($_POST['checkbox_array']) && isset($_POST['bulk_options'])) {
 		foreach ($_POST['checkbox_array'] as $checkbox_value) {
 			set_post_status_post_by_id($checkbox_value, $bulk_option);
 		}
-	} else {
-		if ($bulk_option === 'delete') {
-			foreach ($_POST['checkbox_array'] as $checkbox_value) {
-				delete_post_by_id($checkbox_value);
-			}
+	} else if ($bulk_option === 'delete') {
+		foreach ($_POST['checkbox_array'] as $checkbox_value) {
+			delete_post_by_id($checkbox_value);
+		}
 
+	} else if ($bulk_option === 'clone') {
+		foreach ($_POST['checkbox_array'] as $checkbox_value) {
+			clone_post_by_id($checkbox_value);
 		}
 	}
 }
@@ -56,6 +58,7 @@ if (isset($_GET['edited'])) {
 				<option value="published">Publish</option>
 				<option value="draft">Withdraw</option>
 				<option value="delete">Delete</option>
+				<option value="clone">Clone</option>
 			</select>
 		</div>
 		<div class="form-group col-xs-4">

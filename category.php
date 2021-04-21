@@ -59,7 +59,10 @@ if (isset($_GET['cat_id'])) {
 							$post_title ?></a>
 					</h2>
 					<p class="lead">
-						by <a href="index.php"><?php echo $post_author ?></a>
+						by <a href="author.php?author=<?php echo urlencode
+						($post_author) ?>"><?php
+							echo
+							$post_author ?></a>
 					</p>
 					<p><span class="glyphicon glyphicon-time"></span>
 						<?php echo $post_date ?></p>

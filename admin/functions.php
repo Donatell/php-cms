@@ -297,6 +297,26 @@ function get_post_by_id($id): array|null {
 	}
 }
 
+function clone_post_by_id($id) {
+	global $connection;
+
+	$row = get_post_by_id($id);
+
+	$title = $row['post_title'];
+	$category_id = $row['post_category_id'];
+	$author = $row['post_author'];
+	$status = $row['post_status'];
+	$image = $row['post_image'];
+	$tags = $row['post_tags'];
+	$content = $row['post_content'];
+	$date = date('d-m-y');
+
+	$query =
+		"INSERT INTO posts (post_category_id, post_title, post_status,post_author, post_date, post_image, post_content, post_tags) VALUES ('$category_id', '$title', '$status','$author', '$date', '$image', '$content', '$tags')";
+	$clone_post_query = mysqli_query($connection, $query);
+	confirm_query($clone_post_query);
+}
+
 function set_post_status_post_by_id($id, $status) {
 	global $connection;
 

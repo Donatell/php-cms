@@ -8,7 +8,7 @@
 
 <?php
 if (isset($_GET['author'])) {
-	$author = $_GET['author'];
+	$author = urldecode($_GET['author']);
 } else {
 	header('Location: /');
 }
@@ -32,7 +32,7 @@ if (isset($_GET['author'])) {
 
 			<?php
 			$query =
-				"SELECT * FROM posts WHERE post_author = $author AND post_status = 'published'";
+				"SELECT * FROM posts WHERE post_author = '$author' AND post_status = 'published'";
 			$posts_query = mysqli_query($connection, $query);
 
 			if (mysqli_num_rows($posts_query) === 0) {
@@ -58,7 +58,10 @@ if (isset($_GET['author'])) {
 							$post_title ?></a>
 					</h2>
 					<p class="lead">
-						by <a href="index.php"><?php echo $post_author ?></a>
+						by <a href="author.php?author=<?php echo urlencode
+						($post_author) ?>"><?php
+							echo
+							$post_author ?></a>
 					</p>
 					<p><span class="glyphicon glyphicon-time"></span>
 						<?php echo $post_date ?></p>
