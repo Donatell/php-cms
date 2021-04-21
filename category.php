@@ -8,7 +8,7 @@
 
 <?php
 if (isset($_GET['cat_id'])) {
-	$category_id = $_GET['cat_id'];
+	$category_id = escape($_GET['cat_id']);
 	$category_title = get_category_name_by_id($category_id);
 } else {
 	header('Location: /');
@@ -17,7 +17,7 @@ if (isset($_GET['cat_id'])) {
 
 // set page if no "page" get request
 if (isset($_GET['page'])) {
-	$current_page = $_GET['page'];
+	$current_page = escape($_GET['page']);
 	$posts_per_page = 5;
 } else {
 	header("Location: category.php?cat_id=$category_id&page=1");

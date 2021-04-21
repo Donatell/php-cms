@@ -10,13 +10,19 @@ function confirm_query($query) {
 	}
 }
 
+function escape($string) {
+	global $connection;
+
+	return mysqli_real_escape_string($connection, trim(strip_tags($string)));
+}
+
 //Categories
 function insert_category() {
 
 	global $connection;
 
 	if (isset($_POST['add_category'])) {
-		$cat_title = $_POST['cat_title'];
+		$cat_title = escape($_POST['cat_title']);
 
 		if ($cat_title === '' || empty($cat_title)) {
 			echo 'This field should not be empty';
@@ -35,8 +41,9 @@ function update_category() {
 	global $connection;
 
 	if (isset($_POST['update_category'])) {
-		$cat_title = $_POST['cat_title'];
-		$cat_id = $_GET['edit'];
+		$cat_title = escape($_POST['cat_title']);
+		$cat_id = escape($_GET['edit']);
+
 		$query =
 			"UPDATE categories SET cat_title = '$cat_title' WHERE cat_id = '$cat_id'";
 		$update_category_query = mysqli_query($connection, $query);
@@ -51,7 +58,7 @@ function delete_category() {
 	global $connection;
 
 	if (isset($_GET['delete'])) {
-		$cat_id = $_GET['delete'];
+		$cat_id = escape($_GET['delete']);
 
 		$query =
 			"DELETE FROM categories WHERE cat_id = $cat_id";
@@ -176,11 +183,12 @@ function add_post() {
 	global $connection;
 
 	if (isset($_POST['submit'])) {
-		$title = mysqli_real_escape_string($connection, $_POST['title']);
-		$category_id = $_POST['category_id'];
-		$author = $_POST['author'];
+		$title = escape($_POST['title']);
+		$category_id = escape($_POST['category_id']);
+		$author = escape($_POST['author']);
 
-		if (isset($_POST['publish_now']) && $_POST['publish_now'] === 'yes') {
+		if (isset($_POST['publish_now']) &&
+			escape($_POST['publish_now']) === 'yes') {
 			$status = 'published';
 		} else {
 			$status = 'draft';
@@ -189,15 +197,13 @@ function add_post() {
 		$image = $_FILES['image']['name'];
 		$image_temp = $_FILES['image']['tmp_name'];
 
-		$tags = mysqli_real_escape_string($connection, $_POST['tags']);
-		$content = mysqli_real_escape_string($connection, $_POST['content']);
+		$tags = escape($_POST['tags']);
+		$content = $_POST['content'];
 		$date = date('d-m-y');
 
 		$query =
 			"INSERT INTO posts (post_category_id, post_title, post_status,post_author, post_date, post_image, post_content, post_tags) VALUES ('$category_id', '$title', '$status','$author', '$date', '$image', '$content', '$tags')";
-
 		$add_post_query = mysqli_query($connection, $query);
-
 		confirm_query($add_post_query);
 
 		move_uploaded_file($image_temp, "../images/$image");
@@ -211,11 +217,12 @@ function update_post($post_id) {
 	global $connection;
 
 	if (isset($_POST['submit_update'])) {
-		$title = mysqli_real_escape_string($connection, $_POST['title']);
-		$category_id = $_POST['category_id'];
+		$title = escape($_POST['title']);
+		$category_id = escape($_POST['category_id']);
 		$author = $_POST['author'];
 
-		if (isset($_POST['publish_now']) && $_POST['publish_now'] === 'yes') {
+		if (isset($_POST['publish_now']) &&
+			escape($_POST['publish_now']) === 'yes') {
 			$status = 'published';
 		} else {
 			$status = 'draft';
@@ -229,8 +236,8 @@ function update_post($post_id) {
 			$image_temp = $_FILES['image']['tmp_name'];
 		}
 
-		$tags = mysqli_real_escape_string($connection, $_POST['tags']);
-		$content = mysqli_real_escape_string($connection, $_POST['content']);
+		$tags = escape($_POST['tags']);
+		$content = $_POST['content'];
 
 		$query =
 			"UPDATE posts SET post_title = '$title', post_category_id = $category_id, post_author = '$author', post_status = '$status', post_tags = '$tags', post_content = '$content', post_image = '$image', post_comment_count = $comment_count WHERE post_id = $post_id";
@@ -250,7 +257,7 @@ function delete_post() {
 	global $connection;
 
 	if (isset($_GET['delete'])) {
-		$deleted_post_id = $_GET['delete'];
+		$deleted_post_id = escape($_GET['delete']);
 
 		$query = "DELETE FROM posts WHERE post_id = $deleted_post_id";
 		$delete_post_query = mysqli_query($connection, $query);
@@ -271,6 +278,8 @@ function delete_post_by_id($post_id) {
 function get_post_by_id($id): array|null {
 	global $connection;
 
+	$id = escape($id);
+
 	if (isset($id)) {
 		$edited_post_id = $id;
 
@@ -288,6 +297,8 @@ function get_post_by_id($id): array|null {
 
 function clone_post_by_id($id) {
 	global $connection;
+
+	$id = escape($id);
 
 	$row = get_post_by_id($id);
 
@@ -309,6 +320,9 @@ function clone_post_by_id($id) {
 function set_post_status_post_by_id($id, $status) {
 	global $connection;
 
+	$id = escape($id);
+	$status = escape($status);
+
 	$query = "UPDATE posts SET post_status = '$status' WHERE post_id = $id";
 	$set_post_status_query =
 		mysqli_query($connection, $query);
@@ -318,6 +332,8 @@ function set_post_status_post_by_id($id, $status) {
 
 function increment_post_view_count_by_id($id) {
 	global $connection;
+
+	$id = escape($id);
 
 	$query =
 		"UPDATE posts SET post_view_count = post_view_count + 1 WHERE post_id = $id";
@@ -337,6 +353,8 @@ function count_posts() {
 function count_posts_with_status($status) {
 	global $connection;
 
+	$status = escape($status);
+
 	$query =
 		"SELECT COUNT(*) AS total FROM posts WHERE post_status = '$status'";
 	$count_posts_query = mysqli_query($connection, $query);
@@ -347,6 +365,8 @@ function count_posts_with_status($status) {
 function count_published_posts_by_category_id($category_id) {
 	global $connection;
 
+	$category_id = escape($category_id);
+
 	$query =
 		"SELECT COUNT(*) AS total FROM posts WHERE post_status = 'published' AND post_category_id = $category_id";
 	$count_posts_query = mysqli_query($connection, $query);
@@ -356,6 +376,8 @@ function count_published_posts_by_category_id($category_id) {
 
 function count_published_posts_by_author($author) {
 	global $connection;
+
+	$author = escape($author);
 
 	$query =
 		"SELECT COUNT(*) AS total FROM posts WHERE post_status = 'published' AND post_author = '$author'";
@@ -407,6 +429,8 @@ function find_all_comments() {
 function find_all_comments_by_post_id($post_id) {
 	global $connection;
 
+	$post_ii = escape($post_id);
+
 	$query = "SELECT * FROM comments WHERE comment_post_id = $post_id";
 	$comments_query =
 		mysqli_query($connection, $query);
@@ -444,7 +468,7 @@ function find_all_comments_by_post_id($post_id) {
 function add_comment() {
 	global $connection;
 
-	$post_id = $_GET['post_id'];
+	$post_id = escape($_GET['post_id']);
 
 	$author = mysqli_real_escape_string($connection, $_POST['author']);
 	$email = mysqli_real_escape_string($connection, $_POST['email']);
@@ -463,8 +487,8 @@ function add_comment() {
 function delete_comment() {
 	global $connection;
 
-	$comment_id = $_GET['delete'];
-	$post_id = $_GET['post_id'];
+	$comment_id = escape($_GET['delete']);
+	$post_id = escape($_GET['post_id']);
 
 	$query =
 		"DELETE FROM comments WHERE comment_id = $comment_id";
@@ -476,6 +500,8 @@ function delete_comment() {
 function approve_comment_by_id($id) {
 	global $connection;
 
+	$id = escape($id);
+
 	$query =
 		"UPDATE comments SET comment_status = 'approved' WHERE comment_id = $id";
 	$approve_comment_query = mysqli_query($connection, $query);
@@ -486,6 +512,8 @@ function approve_comment_by_id($id) {
 function disapprove_comment_by_id($id) {
 	global $connection;
 
+	$id = escape($id);
+
 	$query =
 		"UPDATE comments SET comment_status = 'disapproved' WHERE comment_id = $id";
 	$disapprove_comment_query = mysqli_query($connection, $query);
@@ -495,6 +523,8 @@ function disapprove_comment_by_id($id) {
 
 function get_approved_comments_by_post_id($post_id): mysqli_result|bool {
 	global $connection;
+
+	$post_id = escape($post_id);
 
 	$query =
 		"SELECT * FROM comments WHERE comment_status = 'approved' AND comment_post_id = $post_id";
@@ -517,6 +547,8 @@ function count_comments() {
 
 function count_comments_by_post_id($post_id) {
 	global $connection;
+
+	$post_id = escape($post_id);
 
 	$query =
 		"SELECT COUNT(1) AS total FROM comments WHERE comment_post_id = $post_id";
@@ -572,12 +604,12 @@ function find_all_users() {
 function add_user() {
 	global $connection;
 
-	$username = mysqli_real_escape_string($connection, $_POST['username']);
-	$first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
-	$last_name = mysqli_real_escape_string($connection, $_POST['last_name']);
-	$email = mysqli_real_escape_string($connection, $_POST['email']);
-	$password = mysqli_real_escape_string($connection, $_POST['password']);
-	$role = mysqli_real_escape_string($connection, $_POST['role']);
+	$username = escape($_POST['username']);
+	$first_name = escape($_POST['first_name']);
+	$last_name = escape($_POST['last_name']);
+	$email = escape($_POST['email']);
+	$password = $_POST['password'];
+	$role = escape($_POST['role']);
 
 	//	$image = $_FILES['image']['name'];
 	//	$image_temp = $_FILES['image']['tmp_name'];
@@ -599,6 +631,8 @@ function add_user() {
 function get_user_by_id($user_id) {
 	global $connection;
 
+	$user_id = escape($user_id);
+
 	$query = "SELECT * FROM users WHERE user_id = $user_id";
 	$get_user_query =
 		mysqli_query($connection, $query);
@@ -615,6 +649,8 @@ function get_user_by_id($user_id) {
 
 function get_user_by_username($username): array|bool|null {
 	global $connection;
+
+	$username = escape($username);
 
 	$query = "SELECT * FROM users WHERE username = '$username'";
 	$user_query =
@@ -637,9 +673,9 @@ function count_users() {
 function register_user() {
 	global $connection;
 
-	$username = mysqli_real_escape_string($connection, $_POST['username']);
-	$email = mysqli_real_escape_string($connection, $_POST['email']);
-	$password = mysqli_real_escape_string($connection, $_POST['password']);
+	$username = escape($_POST['username']);
+	$email = escape($_POST['email']);
+	$password = $_POST['password'];
 
 	$password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
@@ -685,6 +721,8 @@ function get_all_roles(): mysqli_result|bool {
 function get_role_title_by_id($id) {
 	global $connection;
 
+	$id = escape($id);
+
 	$query = "SELECT * FROM roles WHERE role_id = $id";
 	$role_query =
 		mysqli_query($connection, $query);
@@ -699,10 +737,10 @@ function get_role_title_by_id($id) {
 function delete_user_by_id($id) {
 	global $connection;
 
-	$user_id = $_GET['delete'];
+	$id = escape($id);
 
 	$query =
-		"DELETE FROM users WHERE user_id = $user_id";
+		"DELETE FROM users WHERE user_id = $id";
 	$delete_user_query = mysqli_query($connection, $query);
 
 	confirm_query($delete_user_query);
@@ -713,11 +751,13 @@ function delete_user_by_id($id) {
 function update_user_by_id($user_id) {
 	global $connection;
 
-	$username = mysqli_real_escape_string($connection, $_POST['username']);
-	$first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
-	$last_name = mysqli_real_escape_string($connection, $_POST['last_name']);
-	$email = mysqli_real_escape_string($connection, $_POST['email']);
-	$role = mysqli_real_escape_string($connection, $_POST['role']);
+	$user_id = escape($user_id);
+
+	$username = escape($_POST['username']);
+	$first_name = escape($_POST['first_name']);
+	$last_name = escape($_POST['last_name']);
+	$email = escape($_POST['email']);
+	$role = escape($_POST['role']);
 
 	//		if (empty($_FILES['image']['name'])) {
 	//			$row = get_post_by_id($post_id);
@@ -733,7 +773,7 @@ function update_user_by_id($user_id) {
 	confirm_query($update_user_query);
 
 	if (isset($_POST['new-password-checkbox']) &&
-		$_POST['new-password-checkbox'] == 'yes' &&
+		escape($_POST['new-password-checkbox']) == 'yes' &&
 		isset($_POST['new-password-input'])) {
 
 		$new_password = $_POST['new-password-input'];
@@ -761,11 +801,11 @@ function update_user_by_id($user_id) {
 function update_user_profile_by_id($user_id) {
 	global $connection;
 
-	$username = mysqli_real_escape_string($connection, $_POST['username']);
-	$first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
-	$last_name = mysqli_real_escape_string($connection, $_POST['last_name']);
-	$email = mysqli_real_escape_string($connection, $_POST['email']);
-	$role = mysqli_real_escape_string($connection, $_POST['role']);
+	$username = escape($_POST['username']);
+	$first_name = escape($_POST['first_name']);
+	$last_name = escape($_POST['last_name']);
+	$email = escape($_POST['email']);
+	$role = escape($_POST['role']);
 
 	//		if (empty($_FILES['image']['name'])) {
 	//			$row = get_post_by_id($post_id);
@@ -776,7 +816,7 @@ function update_user_profile_by_id($user_id) {
 	//		}
 
 	$query =
-		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = $role WHERE user_id = $user_id";
+		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = '$role' WHERE user_id = $user_id";
 	$update_profile_query = mysqli_query($connection, $query);
 	confirm_query($update_profile_query);
 

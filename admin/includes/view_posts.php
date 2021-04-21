@@ -3,27 +3,30 @@
 delete_post();
 
 if (isset($_GET['publish'])) {
-	set_post_status_post_by_id($_GET['publish'], 'published');
+	set_post_status_post_by_id(escape($_GET['publish']), 'published');
 }
 
 if (isset($_GET['withdraw'])) {
-	set_post_status_post_by_id($_GET['withdraw'], 'draft');
+	set_post_status_post_by_id(escape($_GET['withdraw']), 'draft');
 }
 
 if (isset($_POST['checkbox_array']) && isset($_POST['bulk_options'])) {
-	echo $bulk_option = $_POST['bulk_options'];
+	$bulk_option = escape($_POST['bulk_options']);
 
 	if ($bulk_option === 'published' || $bulk_option === 'draft') {
 		foreach ($_POST['checkbox_array'] as $checkbox_value) {
+			$checkbox_value = escape($checkbox_value);
 			set_post_status_post_by_id($checkbox_value, $bulk_option);
 		}
 	} else if ($bulk_option === 'delete') {
 		foreach ($_POST['checkbox_array'] as $checkbox_value) {
+			$checkbox_value = escape($checkbox_value);
 			delete_post_by_id($checkbox_value);
 		}
 
 	} else if ($bulk_option === 'clone') {
 		foreach ($_POST['checkbox_array'] as $checkbox_value) {
+			$checkbox_value = escape($checkbox_value);
 			clone_post_by_id($checkbox_value);
 		}
 	}
@@ -39,12 +42,12 @@ if (isset($_POST['checkbox_array']) && isset($_POST['bulk_options'])) {
 <?php
 
 if (isset($_GET['created'])) {
-	$title = $_GET['created'];
+	$title = escape($_GET['created']);
 	echo "<div class='alert alert-success' role='alert'>Post \"$title\" has been created</div>";
 }
 
 if (isset($_GET['edited'])) {
-	$title = $_GET['edited'];
+	$title = escape($_GET['edited']);
 	echo "<div class='alert alert-success' role='alert'>Post \"$title\" has been updated</div>";
 }
 
