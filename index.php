@@ -14,6 +14,7 @@ if (isset($_GET['page'])) {
 	$posts_per_page = 5;
 } else {
 	header('Location: index.php?page=1');
+	exit();
 }
 
 // count all posts and page count for pager

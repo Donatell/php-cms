@@ -10,6 +10,7 @@ session_start();
 // check if user logged in
 if ($_SESSION['user_id'] === null) {
 	header('Location: ../../index.php');
+	exit();
 } else {
 	$user_id = $_SESSION['user_id'];
 	$row = get_user_by_id($user_id);

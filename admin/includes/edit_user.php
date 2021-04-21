@@ -6,6 +6,7 @@ if (isset($_GET['edit'])) {
 	$row = get_user_by_id($user_id);
 	if ($row == null) {
 		header('Location: users.php?action=view_users');
+		exit();
 	}
 
 	$username = $row['username'];

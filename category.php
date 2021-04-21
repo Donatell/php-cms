@@ -12,6 +12,7 @@ if (isset($_GET['cat_id'])) {
 	$category_title = get_category_name_by_id($category_id);
 } else {
 	header('Location: /');
+	exit();
 }
 
 // set page if no "page" get request
@@ -20,6 +21,7 @@ if (isset($_GET['page'])) {
 	$posts_per_page = 5;
 } else {
 	header("Location: category.php?cat_id=$category_id&page=1");
+	exit();
 }
 
 // count all posts and page count for pager

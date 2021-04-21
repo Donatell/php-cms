@@ -13,6 +13,7 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== null) {
 	if ($row == null) {
 		$_SESSION = [];
 		header('Location: index.php');
+		exit();
 	}
 
 	$_SESSION['username'] = $row['username'];

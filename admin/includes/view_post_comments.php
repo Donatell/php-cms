@@ -3,6 +3,7 @@
 // Redirect back to posts if GET has no post id
 if (!isset($_GET['post_id'])) {
 	header('Location: posts.php?action=view_posts');
+	exit();
 } else {
 	$post_id = $_GET['post_id'];
 }

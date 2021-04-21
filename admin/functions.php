@@ -204,7 +204,6 @@ function add_post() {
 
 		$title = urlencode($title);
 		header("Location: posts.php?action=view_posts&created=$title");
-
 	}
 }
 
@@ -595,7 +594,6 @@ function add_user() {
 	//	move_uploaded_file($image_temp, "../images/$image");
 	$username = urlencode($username);
 	header("Location: users.php?action=view_users&created=$username");
-
 }
 
 function get_user_by_id($user_id) {

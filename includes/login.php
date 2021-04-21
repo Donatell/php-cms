@@ -13,6 +13,7 @@ if (isset($_POST['login'])) {
 	// If user not found, redirect
 	if (is_null($row)) {
 		header('Location: ../index.php');
+		exit();
 	}
 
 	// extract user data if user exists
@@ -28,9 +29,10 @@ if (isset($_POST['login'])) {
 		$_SESSION['user_id'] = $db_user_id;
 
 		header('Location: ../admin/index.php');
-
+		exit();
 	} else {
 		header('Location: ../index.php');
+		exit();
 	}
 
 }

@@ -11,6 +11,7 @@ if (isset($_GET['author'])) {
 	$author = urldecode($_GET['author']);
 } else {
 	header('Location: /');
+	exit();
 }
 
 // set page if no "page" get request
@@ -20,6 +21,7 @@ if (isset($_GET['page'])) {
 } else {
 	$author = urlencode($author);
 	header("Location: author.php?author=$author&page=1");
+	exit();
 }
 
 // count all posts and page count for pager
