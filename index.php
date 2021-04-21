@@ -6,6 +6,29 @@
 
 <body>
 
+<?php
+
+// set page if no "page" get request
+if (isset($_GET['page'])) {
+	$current_page = $_GET['page'];
+	$posts_per_page = 5;
+} else {
+	header('Location: index.php?page=1');
+}
+
+// count all posts and page count for pager
+$post_count = count_posts_with_status('published');
+$page_count = ceil($post_count / $posts_per_page);
+
+// set limits for query
+if ($current_page == '1') {
+	$from = 0;
+} else {
+	$from = ($current_page * $posts_per_page) - $posts_per_page;
+}
+
+?>
+
 <!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
 
@@ -18,12 +41,13 @@
 		<div class="col-md-8">
 
 			<h1 class="page-header">
-				Page Heading
-				<small>Secondary Text</small>
+				Feed
+				<small></small>
 			</h1>
 
 			<?php
-			$query = "SELECT * FROM posts WHERE post_status = 'published'";
+			$query =
+				"SELECT * FROM posts WHERE post_status = 'published' LIMIT $from, $posts_per_page";
 			$posts_query = mysqli_query($connection, $query);
 
 			if (mysqli_num_rows($posts_query) === 0) {
@@ -72,14 +96,37 @@
 			} ?>
 
 			<!-- Pager -->
-			<ul class="pager">
-				<li class="previous">
-					<a href="#">&larr; Older</a>
-				</li>
-				<li class="next">
-					<a href="#">Newer &rarr;</a>
-				</li>
-			</ul>
+			<nav>
+				<ul class="pagination">
+					<?php
+
+					if ($current_page == '1') {
+						echo "<li class='disabled'><span>&laquo;</span></li>";
+					} else {
+						$previous = $current_page - 1;
+						echo "<li><a href='index.php?page=$previous'><span>&laquo;</span></a></li>";
+					}
+
+					$next = $current_page + 1;
+
+					for ($i = 1; $i <= $page_count; $i++) {
+						if ($i == $current_page) {
+							echo "<li class='active'><a href='index.php?page=$i'>$i</a></li>";
+						} else {
+							echo "<li><a href='index.php?page=$i'>$i</a></li>";
+						}
+					}
+
+					if ($current_page == $page_count) {
+						echo "<li class='disabled'><span>&raquo;</span></li>";
+					} else {
+						$next = $current_page + 1;
+						echo "<li><a href='index.php?page=$next'><span>&raquo;</span></a></li>";
+					}
+
+					?>
+				</ul>
+			</nav>
 
 		</div>
 
