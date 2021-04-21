@@ -362,6 +362,26 @@ function count_posts_with_status($status) {
 	return mysqli_fetch_assoc($count_posts_query)['total'];
 }
 
+function count_published_posts_by_category_id($category_id) {
+	global $connection;
+
+	$query =
+		"SELECT COUNT(*) AS total FROM posts WHERE post_status = 'published' AND post_category_id = $category_id";
+	$count_posts_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_posts_query)['total'];
+}
+
+function count_published_posts_by_author($author) {
+	global $connection;
+
+	$query =
+		"SELECT COUNT(*) AS total FROM posts WHERE post_status = 'published' AND post_author = '$author'";
+	$count_posts_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_posts_query)['total'];
+}
+
 // Comments
 function find_all_comments() {
 	global $connection;

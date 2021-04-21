@@ -13,6 +13,26 @@ if (isset($_GET['cat_id'])) {
 } else {
 	header('Location: /');
 }
+
+// set page if no "page" get request
+if (isset($_GET['page'])) {
+	$current_page = $_GET['page'];
+	$posts_per_page = 5;
+} else {
+	header("Location: category.php?cat_id=$category_id&page=1");
+}
+
+// count all posts and page count for pager
+$post_count = count_published_posts_by_category_id($category_id);
+$page_count = ceil($post_count / $posts_per_page);
+
+// set limits for query
+if ($current_page == '1') {
+	$from = 0;
+} else {
+	$from = ($current_page * $posts_per_page) - $posts_per_page;
+}
+
 ?>
 
 <!-- Navigation -->
@@ -33,7 +53,7 @@ if (isset($_GET['cat_id'])) {
 
 			<?php
 			$query =
-				"SELECT * FROM posts WHERE post_category_id = $category_id AND post_status = 'published'";
+				"SELECT * FROM posts WHERE post_category_id = $category_id AND post_status = 'published' LIMIT $from, $posts_per_page";
 			$posts_query = mysqli_query($connection, $query);
 
 			if (mysqli_num_rows($posts_query) === 0) {
@@ -81,14 +101,37 @@ if (isset($_GET['cat_id'])) {
 			} ?>
 
 			<!-- Pager -->
-			<ul class="pager">
-				<li class="previous">
-					<a href="#">&larr; Older</a>
-				</li>
-				<li class="next">
-					<a href="#">Newer &rarr;</a>
-				</li>
-			</ul>
+			<nav>
+				<ul class="pagination">
+					<?php
+
+					if ($current_page == '1') {
+						echo "<li class='disabled'><span>&laquo;</span></li>";
+					} else {
+						$previous = $current_page - 1;
+						echo "<li><a href='category.php?cat_id=$category_id&page=$previous'><span>&laquo;</span></a></li>";
+					}
+
+					$next = $current_page + 1;
+
+					for ($i = 1; $i <= $page_count; $i++) {
+						if ($i == $current_page) {
+							echo "<li class='active'><a href='category.php?cat_id=$category_id&page=$i'>$i</a></li>";
+						} else {
+							echo "<li><a href='category.php?cat_id=$category_id&page=$i'>$i</a></li>";
+						}
+					}
+
+					if ($current_page == $page_count) {
+						echo "<li class='disabled'><span>&raquo;</span></li>";
+					} else {
+						$next = $current_page + 1;
+						echo "<li><a href='category.php?cat_id=$category_id&page=$next'><span>&raquo;</span></a></li>";
+					}
+
+					?>
+				</ul>
+			</nav>
 
 		</div>
 
