@@ -21,10 +21,9 @@ if (isset($_POST['login'])) {
 	$db_username = $row['username'];
 	$db_password = $row['user_password'];
 
-	$password = crypt($password, get_salt());
-
 	// start session if username and password are valid
-	if ($password === $db_password && $username === $db_username) {
+	if (password_verify($password, $db_password) &&
+		$username === $db_username) {
 		session_start();
 		$_SESSION['user_id'] = $db_user_id;
 

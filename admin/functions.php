@@ -10,16 +10,6 @@ function confirm_query($query) {
 	}
 }
 
-function get_salt() {
-	global $connection;
-
-	$query = 'SELECT randSalt FROM users';
-	$salt_query = mysqli_query($connection, $query);
-	confirm_query($salt_query);
-
-	return mysqli_fetch_array($salt_query)['randSalt'];
-}
-
 //Categories
 function insert_category() {
 
@@ -572,7 +562,7 @@ function add_user() {
 	//	$image = $_FILES['image']['name'];
 	//	$image_temp = $_FILES['image']['tmp_name'];
 
-	$password = crypt($password, get_salt());
+	$password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
 	$query =
 		"INSERT INTO users (username, user_password, user_first_name, user_last_name, user_email, user_role) VALUES ('$username', '$password', '$first_name', '$last_name', '$email', $role)";
@@ -591,12 +581,19 @@ function get_user_by_id($user_id) {
 	global $connection;
 
 	$query = "SELECT * FROM users WHERE user_id = $user_id";
-	$edit_user_query =
+	$get_user_query =
 		mysqli_query($connection, $query);
+	confirm_query($get_user_query);
 
-	confirm_query($edit_user_query);
-
-	return mysqli_fetch_assoc($edit_user_query);
+	// if user not found, clear session and refresh page
+	if (mysqli_num_rows($get_user_query)
+		== null) {
+		$_SESSION = [];
+		header('Location: index.php');
+	} else {
+		return mysqli_fetch_assoc($get_user_query);
+	}
+	return null;
 }
 
 function get_user_by_username($username): array|bool|null {
@@ -627,7 +624,7 @@ function register_user() {
 	$email = mysqli_real_escape_string($connection, $_POST['email']);
 	$password = mysqli_real_escape_string($connection, $_POST['password']);
 
-	$password = crypt($password, get_salt());
+	$password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
 	$query =
 		"INSERT INTO users (username, user_password, user_email) VALUES ('$username', '$password', '$email')";
