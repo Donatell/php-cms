@@ -244,10 +244,15 @@ function update_post($post_id) {
 		$content = mysqli_real_escape_string($connection, $_POST['content']);
 
 		$query =
-			"UPDATE posts SET post_title = '$title', post_category_id = $category_id, post_author = '$author', post_status = '$status', post_tags = '$tags', post_content = '$content', post_image = '$image' WHERE post_id = $post_id";
+			"SELECT COUNT(1) AS total FROM comments WHERE comment_post_id = $post_id";
+		$count_comments_query = mysqli_query($connection, $query);
+		confirm_query($count_comments_query);
 
+		$comment_count = mysqli_fetch_assoc($count_comments_query)['total'];
+
+		$query =
+			"UPDATE posts SET post_title = '$title', post_category_id = $category_id, post_author = '$author', post_status = '$status', post_tags = '$tags', post_content = '$content', post_image = '$image', post_comment_count = $comment_count WHERE post_id = $post_id";
 		$update_post_query = mysqli_query($connection, $query);
-
 		confirm_query($update_post_query);
 
 		if (isset($image_temp)) {
