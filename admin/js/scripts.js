@@ -4,6 +4,16 @@ ClassicEditor
 		console.error(error);
 	});
 
+const $passwordInput = $('#password-input');
+
+$('#password-checkbox').on('click', function () {
+	if ($(this).is(':checked')) {
+		$passwordInput.removeClass('hidden');
+	} else {
+		$passwordInput.addClass('hidden');
+	}
+});
+
 $(document).ready(function () {
 	$('#selectAllBoxes').click(function (e) {
 		if (this.checked) {

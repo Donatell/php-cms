@@ -9,6 +9,7 @@ if (isset($_GET['edit'])) {
 	$last_name = $row['user_last_name'];
 	$email = $row['user_email'];
 	$role = $row['user_role'];
+	$password = $row['user_password'];
 
 	if (isset($_POST['submit'])) {
 		update_user_by_id($user_id);
@@ -72,11 +73,18 @@ if (isset($_GET['edit'])) {
 		echo $email ?>" />
 	</div>
 
-	<!--TODO change password function-->
-	<!--<div class="form-group">-->
-	<!--	<label for="tags">Password</label>-->
-	<!--	<input type="text" class="form-control" name="password" />-->
-	<!--</div>-->
+	<div class="checkbox">
+		<label>
+			<input id="password-checkbox" type="checkbox"
+			       name="new-password-checkbox"
+			       value="yes" />Set new password?
+		</label>
+	</div>
+
+	<div class="form-group hidden" id="password-input">
+		<label for="new-password">New Password</label>
+		<input type="text" class="form-control" name="new-password-input" />
+	</div>
 
 	<div class="form-group">
 		<input class="btn btn-primary"

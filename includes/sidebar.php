@@ -27,7 +27,7 @@
 
 			</div>
 			<div class="input-group">
-				<input name="password" type="text" class="form-control"
+				<input name="password" type="password" class="form-control"
 				       placeholder="Enter Password">
 				<span class="input-group-btn">
 					<button name="login" class="btn btn-primary"

@@ -61,11 +61,26 @@ if (isset($_POST['submit'])) {
 		echo $_SESSION['email'] ?>" />
 	</div>
 
-	<!--TODO change password function-->
-	<!--<div class="form-group">-->
-	<!--	<label for="tags">Password</label>-->
-	<!--	<input type="text" class="form-control" name="password" />-->
-	<!--</div>-->
+	<!-- todo complete password change function-->
+
+	<div class="checkbox">
+		<label>
+			<input id="password-checkbox" type="checkbox" name="new_password"
+			       value="yes" />Set new password?
+		</label>
+	</div>
+	
+	<div id="password-input">
+		<div class="form-group">
+			<label for="old-password">Previous Password</label>
+			<input type="password" class="form-control" name="old-password" />
+		</div>
+
+		<div class="form-group">
+			<label for="new-password">New Password</label>
+			<input type="password" class="form-control" name="new-password" />
+		</div>
+	</div>
 
 	<div class="form-group">
 		<input class="btn btn-primary"

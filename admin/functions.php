@@ -712,10 +712,22 @@ function update_user_by_id($user_id) {
 
 	$query =
 		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = $role WHERE user_id = $user_id";
-
 	$update_user_query = mysqli_query($connection, $query);
-
 	confirm_query($update_user_query);
+
+	if (isset($_POST['new-password-checkbox']) &&
+		$_POST['new-password-checkbox'] == 'yes' &&
+		isset($_POST['new-password-input'])) {
+
+		$new_password = $_POST['new-password-input'];
+		$new_password = password_hash($new_password, PASSWORD_BCRYPT,
+			['cost' => 12]);
+
+		$query =
+			"UPDATE users SET user_password = '$new_password' WHERE user_id = $user_id";
+		$update_password_query = mysqli_query($connection, $query);
+		confirm_query($update_password_query);
+	}
 
 	//		if (isset($image_temp)) {
 	//			move_uploaded_file($image_temp, "../images/$image");
@@ -748,9 +760,7 @@ function update_user_profile_by_id($user_id) {
 
 	$query =
 		"UPDATE users SET username = '$username', user_first_name = '$first_name', user_last_name = '$last_name', user_email = '$email', user_role = $role WHERE user_id = $user_id";
-
 	$update_profile_query = mysqli_query($connection, $query);
-
 	confirm_query($update_profile_query);
 
 	//		if (isset($image_temp)) {
