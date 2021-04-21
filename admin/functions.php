@@ -136,7 +136,7 @@ function find_all_posts() {
 		$post_status = $row['post_status'];
 		$post_image = $row['post_image'];
 		$post_tags = $row['post_tags'];
-		$post_comment_count = $row['post_comment_count'];
+		$post_comment_count = count_comments_by_post_id($post_id);
 		$post_view_count = $row['post_view_count'];
 
 		$post_category_name = get_category_name_by_id($post_category_id);
@@ -159,7 +159,7 @@ function find_all_posts() {
 		echo "<td>$post_status</td>";
 		echo "<td><img src='/images/$post_image' alt='' width='100px'></td>";
 		echo "<td>$post_tags</td>";
-		echo "<td>$post_comment_count</td>";
+		echo "<td><a href='comments.php?action=view_post_comments&post_id=$post_id'>$post_comment_count</a></td>";
 		echo "<td>$post_view_count</td>";
 		echo "<td><a href='posts.php?action=view_posts&delete=$post_id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>" .
 			"<a href='posts.php?action=edit_post&edit=$post_id'>Edit</a></td>";
@@ -232,13 +232,6 @@ function update_post($post_id) {
 
 		$tags = mysqli_real_escape_string($connection, $_POST['tags']);
 		$content = mysqli_real_escape_string($connection, $_POST['content']);
-
-		$query =
-			"SELECT COUNT(1) AS total FROM comments WHERE comment_post_id = $post_id";
-		$count_comments_query = mysqli_query($connection, $query);
-		confirm_query($count_comments_query);
-
-		$comment_count = mysqli_fetch_assoc($count_comments_query)['total'];
 
 		$query =
 			"UPDATE posts SET post_title = '$title', post_category_id = $category_id, post_author = '$author', post_status = '$status', post_tags = '$tags', post_content = '$content', post_image = '$image', post_comment_count = $comment_count WHERE post_id = $post_id";
@@ -412,6 +405,43 @@ function find_all_comments() {
 	}
 }
 
+function find_all_comments_by_post_id($post_id) {
+	global $connection;
+
+	$query = "SELECT * FROM comments WHERE comment_post_id = $post_id";
+	$comments_query =
+		mysqli_query($connection, $query);
+	confirm_query($comments_query);
+
+	while ($row =
+		mysqli_fetch_assoc($comments_query)) {
+		$id = $row['comment_id'];
+		$author = $row['comment_author'];
+		$email = $row['comment_email'];
+		$content = $row['comment_content'];
+		$status = $row['comment_status'];
+		$date = $row['comment_date'];
+
+		$post_title = get_post_by_id($post_id)['post_title'];
+
+		echo "<tr>";
+		echo "<td>$id</td>";
+		echo "<td><a href='/post.php?post_id=$post_id'>$post_title</a></td>";
+		echo "<td>$author</td>";
+		echo "<td>$email</td>";
+		echo "<td>$content</td>";
+		echo "<td>$status</td>";
+		echo "<td>$date</td>";
+		echo "<td>";
+		echo "<a href='comments.php?action=view_post_comments&post_id=$post_id&approve=$id'>Approve
+		</a><br>";
+		echo "<a href='comments.php?action=view_post_comments&post_id=$post_id&disapprove=$id'>Disapprove</a><br>";
+		echo "<a href='comments.php?action=view_post_comments&post_id=$post_id&delete=$id&post_id=$post_id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>";
+		echo "</td>";
+		echo "</tr>";
+	}
+}
+
 function add_comment() {
 	global $connection;
 
@@ -429,35 +459,19 @@ function add_comment() {
 		"INSERT INTO comments (comment_post_id, comment_author, comment_email, comment_content) VALUES ($post_id, '$author', '$email', '$content')";
 	$add_comment_query = mysqli_query($connection, $comment_query);
 	confirm_query($add_comment_query);
-
-	$post_query =
-		"UPDATE posts SET post_comment_count = post_comment_count + 1 WHERE post_id = $post_id";
-	$increment_post_comment_count_query =
-		mysqli_query($connection, $post_query);
-	confirm_query($increment_post_comment_count_query);
 }
 
 function delete_comment() {
 	global $connection;
 
-	if (isset($_GET['delete'])) {
-		$comment_id = $_GET['delete'];
-		$post_id = $_GET['post_id'];
+	$comment_id = $_GET['delete'];
+	$post_id = $_GET['post_id'];
 
-		$query =
-			"DELETE FROM comments WHERE comment_id = $comment_id";
-		$delete_comment_query = mysqli_query($connection, $query);
+	$query =
+		"DELETE FROM comments WHERE comment_id = $comment_id";
+	$delete_comment_query = mysqli_query($connection, $query);
 
-		confirm_query($delete_comment_query);
-
-		header('Location: comments.php?action=view_comments');
-
-		$post_query =
-			"UPDATE posts SET post_comment_count = post_comment_count - 1 WHERE post_id = $post_id";
-		$decrement_post_comment_count_query =
-			mysqli_query($connection, $post_query);
-		confirm_query($decrement_post_comment_count_query);
-	}
+	confirm_query($delete_comment_query);
 }
 
 function approve_comment_by_id($id) {
@@ -468,8 +482,6 @@ function approve_comment_by_id($id) {
 	$approve_comment_query = mysqli_query($connection, $query);
 
 	confirm_query($approve_comment_query);
-
-	header('Location: comments.php?action=view_comments');
 }
 
 function disapprove_comment_by_id($id) {
@@ -480,8 +492,6 @@ function disapprove_comment_by_id($id) {
 	$disapprove_comment_query = mysqli_query($connection, $query);
 
 	confirm_query($disapprove_comment_query);
-
-	header('Location: comments.php?action=view_comments');
 }
 
 function get_approved_comments_by_post_id($post_id): mysqli_result|bool {
@@ -502,6 +512,17 @@ function count_comments() {
 
 	$query = "SELECT COUNT(*) AS total FROM comments";
 	$count_comments_query = mysqli_query($connection, $query);
+
+	return mysqli_fetch_assoc($count_comments_query)['total'];
+}
+
+function count_comments_by_post_id($post_id) {
+	global $connection;
+
+	$query =
+		"SELECT COUNT(1) AS total FROM comments WHERE comment_post_id = $post_id";
+	$count_comments_query = mysqli_query($connection, $query);
+	confirm_query($count_comments_query);
 
 	return mysqli_fetch_assoc($count_comments_query)['total'];
 }
@@ -588,12 +609,10 @@ function get_user_by_id($user_id) {
 	// if user not found, clear session and refresh page
 	if (mysqli_num_rows($get_user_query)
 		== null) {
-		$_SESSION = [];
-		header('Location: index.php');
+		return null;
 	} else {
 		return mysqli_fetch_assoc($get_user_query);
 	}
-	return null;
 }
 
 function get_user_by_username($username): array|bool|null {

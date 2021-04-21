@@ -9,6 +9,12 @@ session_start();
 if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== null) {
 	$user_id = $_SESSION['user_id'];
 	$row = get_user_by_id($user_id);
+
+	if ($row == null) {
+		$_SESSION = [];
+		header('Location: index.php');
+	}
+
 	$_SESSION['username'] = $row['username'];
 	$_SESSION['first_name'] = $row['user_first_name'];
 	$_SESSION['last_name'] = $row['user_last_name'];

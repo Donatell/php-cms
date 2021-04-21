@@ -26,7 +26,9 @@
 							case 'view_comments':
 								include 'includes/view_comments.php';
 								break;
-
+							case 'view_post_comments':
+								include 'includes/view_post_comments.php';
+								break;
 							default:
 								echo 'Routing Error';
 								break;
