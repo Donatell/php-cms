@@ -19,6 +19,10 @@ if (isset($_GET['post_id'])) {
 	$image = $row['post_image'];
 	$tags = $row['post_tags'];
 	$comment_count = $row['post_comment_count'];
+
+	increment_post_view_count_by_id($id);
+} else {
+	header('Location: index.php');
 }
 
 if (isset($_POST['submit_comment'])) {

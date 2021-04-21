@@ -147,6 +147,7 @@ function find_all_posts() {
 		$post_image = $row['post_image'];
 		$post_tags = $row['post_tags'];
 		$post_comment_count = $row['post_comment_count'];
+		$post_view_count = $row['post_view_count'];
 
 		$post_category_name = get_category_name_by_id($post_category_id);
 
@@ -169,6 +170,7 @@ function find_all_posts() {
 		echo "<td><img src='/images/$post_image' alt='' width='100px'></td>";
 		echo "<td>$post_tags</td>";
 		echo "<td>$post_comment_count</td>";
+		echo "<td>$post_view_count</td>";
 		echo "<td><a href='posts.php?action=view_posts&delete=$post_id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>" .
 			"<a href='posts.php?action=edit_post&edit=$post_id'>Edit</a></td>";
 		if ($post_status === 'draft') {
@@ -325,6 +327,15 @@ function set_post_status_post_by_id($id, $status) {
 		mysqli_query($connection, $query);
 
 	confirm_query($set_post_status_query);
+}
+
+function increment_post_view_count_by_id($id) {
+	global $connection;
+
+	$query =
+		"UPDATE posts SET post_view_count = post_view_count + 1 WHERE post_id = $id";
+	$increment_post_view_query = mysqli_query($connection, $query);
+	confirm_query($increment_post_view_query);
 }
 
 function count_posts() {

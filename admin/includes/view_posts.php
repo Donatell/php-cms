@@ -87,6 +87,7 @@ if (isset($_GET['edited'])) {
 			<th>Image</th>
 			<th>Tags</th>
 			<th>Comments</th>
+			<th>Views</th>
 			<th>Action</th>
 			<th>Publication</th>
 		</tr>
