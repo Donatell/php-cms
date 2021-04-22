@@ -19,22 +19,30 @@
 
 	<!-- Login -->
 	<div class="well">
-		<h4>Login</h4>
-		<form action="includes/login.php" method="post">
-			<div class="form-group">
-				<input name="username" type="text" class="form-control"
-				       placeholder="Enter Username...">
+		<?php if (isset($_SESSION['user_id'])): ?>
+			<h4>Hello, <?php echo $_SESSION['username'] ?></h4>
+			<a href="admin/users.php?action=view_profile" class="btn
+			btn-primary">View
+			             Profile</a>
+			<a href="includes/logout.php" class="btn btn-primary">Logout</a>
+		<?php else: ?>
+			<h4>Login</h4>
+			<form action="includes/login.php" method="post">
+				<div class="form-group">
+					<input name="username" type="text" class="form-control"
+					       placeholder="Enter Username...">
 
-			</div>
-			<div class="input-group">
-				<input name="password" type="password" class="form-control"
-				       placeholder="Enter Password">
-				<span class="input-group-btn">
+				</div>
+				<div class="input-group">
+					<input name="password" type="password" class="form-control"
+					       placeholder="Enter Password">
+					<span class="input-group-btn">
 					<button name="login" class="btn btn-primary"
 					        type="submit">Log In</button>
 				</span>
-			</div>
-		</form>
+				</div>
+			</form>
+		<?php endif; ?>
 		<!-- /.input-group -->
 	</div>
 
@@ -49,9 +57,9 @@
 					$query = 'SELECT * FROM categories';
 					$categories_query = mysqli_query($connection, $query);
 
-					while ($table_row = mysqli_fetch_assoc($categories_query)) {
-						$cat_title = $table_row['cat_title'];
-						$cat_id = $table_row['cat_id'];
+					while ($row = mysqli_fetch_assoc($categories_query)) {
+						$cat_title = $row['cat_title'];
+						$cat_id = $row['cat_id'];
 
 						echo "<li><a href='category.php?cat_id=$cat_id'>$cat_title</a></li>";
 					}

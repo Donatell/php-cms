@@ -22,8 +22,14 @@
 
 				while ($row = mysqli_fetch_assoc($categories_query)) {
 					$cat_title = $row['cat_title'];
+					$cat_id = $row['cat_id'];
 
-					echo "<li><a href='#'>{$cat_title}</a></li>";
+					if (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat_id) {
+						echo "<li class='active'><a href='category.php?cat_id=$cat_id'>{$cat_title}</a></li>";
+					} else {
+						echo "<li><a href='category.php?cat_id=$cat_id'>{$cat_title}</a></li>";
+					}
+
 				}
 				?>
 				<li><a href='/admin'>Admin</a></li>

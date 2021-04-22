@@ -238,10 +238,10 @@ function update_post($post_id) {
 		}
 
 		$tags = escape($_POST['tags']);
-		$content = $_POST['content'];
+		$content = str_replace('\r\n', '</br>', $_POST['content']);
 
 		$query =
-			"UPDATE posts SET post_title = '$title', post_category_id = $category_id, post_author = '$author', post_status = '$status', post_tags = '$tags', post_content = '$content', post_image = '$image', post_comment_count = $comment_count WHERE post_id = $post_id";
+			"UPDATE posts SET post_title = '$title', post_category_id = $category_id, post_author = '$author', post_status = '$status', post_tags = '$tags', post_content = '$content', post_image = '$image' WHERE post_id = $post_id";
 		$update_post_query = mysqli_query($connection, $query);
 		confirm_query($update_post_query);
 
