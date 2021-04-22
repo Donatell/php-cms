@@ -15,7 +15,9 @@ $('#password-checkbox').on('click', function () {
 });
 
 $(document).ready(function () {
-	$('#selectAllBoxes').click(function (e) {
+
+	// "Select All" checkbox behaviour
+	$('#selectAllBoxes').on('click', function (e) {
 		if (this.checked) {
 			$('.checkbox').each(function () {
 				this.checked = true;
@@ -25,5 +27,13 @@ $(document).ready(function () {
 				this.checked = false;
 			});
 		}
+	});
+
+	$('.delete_link').on('click', function () {
+		const id = this.rel;
+		$('#modal_delete_link')
+			.attr('href', `posts.php?action=view_posts&delete=${id}`);
+
+		$('#myModal').modal('show');
 	});
 });

@@ -19,6 +19,8 @@
 					<!-- Page Heading -->
 					<?php
 
+					include 'includes/modal_delete.php';
+
 					if (isset($_GET['action'])) {
 						$action = $_GET['action'];
 

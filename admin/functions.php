@@ -168,7 +168,8 @@ function find_all_posts() {
 		echo "<td>$post_tags</td>";
 		echo "<td><a href='comments.php?action=view_post_comments&post_id=$post_id'>$post_comment_count</a></td>";
 		echo "<td>$post_view_count</td>";
-		echo "<td><a href='posts.php?action=view_posts&delete=$post_id' onClick=\"javascript: return confirm('Are you sure you want to delete?')\">Delete</a><br>" .
+		//		echo "<td><a href='posts.php?action=view_posts&delete=$post_id'>Delete</a><br>" .
+		echo "<td><a href='javascript:void(0)' class='delete_link' rel='$post_id'>Delete</a><br>" .
 			"<a href='posts.php?action=edit_post&edit=$post_id'>Edit</a></td>";
 		if ($post_status === 'draft') {
 			echo "<td><a href='posts.php?action=view_posts&publish=$post_id'>Publish</a><br></td>";
