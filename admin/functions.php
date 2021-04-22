@@ -127,7 +127,8 @@ function count_categories() {
 function find_all_posts() {
 	global $connection;
 
-	$query = "SELECT * FROM posts";
+	$query =
+		"SELECT posts.post_id, posts.post_category_id, posts.post_title, posts.post_author, posts.post_date, posts.post_image, posts.post_content, post_tags, posts.post_comment_count, posts.post_status, posts.post_view_count, categories.cat_id, categories.cat_title FROM posts LEFT JOIN categories ON posts.post_category_id = categories.cat_id ORDER BY posts.post_id DESC";
 	$posts_query =
 		mysqli_query($connection, $query);
 
@@ -139,14 +140,12 @@ function find_all_posts() {
 		$post_author = $row['post_author'];
 		$post_title = $row['post_title'];
 		$post_date = $row['post_date'];
-		$post_category_id = $row['post_category_id'];
 		$post_status = $row['post_status'];
 		$post_image = $row['post_image'];
 		$post_tags = $row['post_tags'];
 		$post_comment_count = count_comments_by_post_id($post_id);
 		$post_view_count = $row['post_view_count'];
-
-		$post_category_name = get_category_name_by_id($post_category_id);
+		$post_category_name = $row['cat_title'];
 
 		echo "<tr>";
 
